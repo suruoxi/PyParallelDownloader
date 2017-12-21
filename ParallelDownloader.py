@@ -20,7 +20,6 @@ def retryer():
                 try:
                     result = func(*args, **kwargs)
                 except request_exceptions:
-                    #time.sleep(timeout)
                     continue
                 else:
                     return result
@@ -35,7 +34,6 @@ def empty(rec):
 
 @retryer()
 def getimg(rec):
-    #print rec
     try:
         url,dst = rec
     except IndexError:
@@ -43,7 +41,6 @@ def getimg(rec):
     dir, _ = os.path.split(dst)
     if not os.path.exists(dir):
         os.makedirs(dir)
-    #print url
     if not os.path.exists(dst):
         try:
             wget.download(url, dst, None) # quiet mode
@@ -60,15 +57,10 @@ def worker_func(*args, **kwargs):
 
 def parallel_download(data,threads=10):
     pool = multiprocessing.Pool(processes = threads,)
-    #pool_outputs = pool.map(getimg, img_urls)
 
     # show progress bar
     for _ in tqdm.tqdm(pool.imap_unordered(worker_func,data), total=len(data)):
         pass
-    #pool.imap_unordered(worker_func,data):
-    #pool_outputs = pool.map(worker_func, data)
-    #pool.close()
-    #pool.join()
 
 
 if __name__ == "__main__":
